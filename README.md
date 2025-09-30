@@ -22,7 +22,7 @@ npm ci
 ```bash
 npm run dev
 ``` 
-Now open <a href http://localhost:3000 > in your browser.
+Now open < http://localhost:3000 > in your browser.
 
 ## 🧪 Testing & Validation
 
