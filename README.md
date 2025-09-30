@@ -9,7 +9,7 @@ It is built with **Next.js 15 (App Router)**, **TypeScript**, and **Tailwind CSS
 
 ### 1. Clone the repository
 ```bash
-git clone <repo-url>
+git clone <https://github.com/rwwwn/podcast-numou.git>
 cd podcast-numou
 ``` 
 ### 2. Install dependencies
