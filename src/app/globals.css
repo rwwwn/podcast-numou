@@ -1,26 +1,121 @@
 @import "tailwindcss";
+/* remove this if you didn’t install it: npm i tw-animate-css */
+@import "tw-animate-css";
 
+/* --- Base design tokens (brand) --- */
 :root {
+  /* fonts are injected via next/font in layout.tsx */
+  --font-fustat: "Fustat", system-ui, sans-serif;
+  --font-brando: "brando-arabic", system-ui, sans-serif;
+
+  /* layout */
+  --radius: 10px;
+
+  /* neutrals */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #121212;
+  --border: #e5e7eb;
+  --ring: #a3a3a3;
+
+  /* brand primaries */
+  --primary: #35757F;       /* teal */
+  --primary-foreground: #ffffff;
+
+  --accent:  #E2A674;       /* warm sand (secondary) */
+  --accent-foreground: #1a1a1a;
+
+  /* supporting palettes (you can use them directly) */
+  --sun:   #F6E466;
+  --sun-2: #DDC76D;
+  --sun-3: #E5D284;
+  --sun-4: #EDE0A2;
+  --sun-5: #F4ECBE;
+
+  --teal:   #30846D;
+  --teal-2: #41866E;
+  --teal-3: #59947D;
+  --teal-4: #7FC0A7;
+  --teal-5: #B7DDCF;
+
+  --rose:   #F1D6DD;
+  --rose-2: #E2A1BB;
+  --rose-3: #E4BDCE;
+  --rose-4: #EAD3DF;
+  --rose-5: #F7E8ED;
+
+  --coral:   #EE6A5B;
+  --coral-2: #DD6056;
+  --coral-3: #DD706C;
+  --coral-4: #E59393;
+  --coral-5: #EDB6B6;
+
+  /* hero background gradient (like your Figma) */
+  --hero-bg: radial-gradient(600px 600px at 15% 20%, #35757F 0%, #D4FCFF 70%, transparent 100%),
+             radial-gradient(600px 600px at 85% 15%, #D4FCFF 0%, transparent 70%);
 }
 
+/* dark mode overrides (tweak if you like) */
+.dark {
+  --background: #0f1416;
+  --foreground: #f5f7f7;
+  --border: #263238;
+  --ring: #7b8790;
+
+  --primary: #2e636b;
+  --primary-foreground: #f4f7f7;
+
+  --accent: #c69364;
+  --accent-foreground: #0f1416;
+
+  /* soften supporting tones in dark */
+  --sun: #e1d56a;
+  --teal: #2a6f5c;
+  --rose: #e9c8d1;
+  --coral: #e05e50;
+
+  --hero-bg: radial-gradient(600px 600px at 15% 20%, #2e636b 0%, #1b2c30 70%, transparent 100%),
+             radial-gradient(600px 600px at 85% 15%, #1b2c30 0%, transparent 70%);
+}
+
+/* RTL */
+html[dir="rtl"] body { direction: rtl; }
+
+/* Map tokens to Tailwind (v4 @theme) */
 @theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* expose supporting colors as Tailwind color tokens */
+  --color-sun: var(--sun);
+  --color-teal: var(--teal);
+  --color-rose: var(--rose);
+  --color-coral: var(--coral);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base layer */
+@layer base {
+  * { @apply border-border outline-ring/50; }
+
+  body {
+    @apply bg-background text-foreground antialiased min-h-dvh;
+    font-family: var(--font-fustat);
+
+    /* 🔹 فعّلي الخلفية المتدرّجة العامة (المعرّفة سابقًا كـ --hero-bg) */
+    background-image: var(--hero-bg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed; /* يعطي إحساس أن الخلفية ثابتة */
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

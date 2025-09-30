@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": false,
+  "files.eol": "\n",
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.validate": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint":  "always"
+  }
+}
