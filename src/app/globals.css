@@ -24,6 +24,17 @@
   --accent:  #E2A674;       /* warm sand (secondary) */
   --accent-foreground: #1a1a1a;
 
+  /* destructive (for errors) */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  /* muted */
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+
+  /* input */
+  --input: #d1d5db;
+
   /* supporting palettes (you can use them directly) */
   --sun:   #F6E466;
   --sun-2: #DDC76D;
@@ -67,6 +78,17 @@
   --accent: #c69364;
   --accent-foreground: #0f1416;
 
+  /* destructive (for errors) */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  /* muted */
+  --muted: #1f2937;
+  --muted-foreground: #9ca3af;
+
+  /* input */
+  --input: #374151;
+
   /* soften supporting tones in dark */
   --sun: #e1d56a;
   --teal: #2a6f5c;
@@ -96,6 +118,17 @@ html[dir="rtl"] body { direction: rtl; }
 
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+
+  /* destructive colors */
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  /* muted colors */
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* input */
+  --color-input: var(--input);
 
   /* expose supporting colors as Tailwind color tokens */
   --color-sun: var(--sun);
