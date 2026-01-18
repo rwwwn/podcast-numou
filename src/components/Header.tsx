@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import React from 'react';
 import { ModeToggle } from './ModeToggle';
+import { useSession, signOut } from 'next-auth/react';
 
 const menuItems = [
   { name: 'الرئيسية', href: '/' },
@@ -16,6 +17,7 @@ const menuItems = [
 
 export const HeroHeader = () => {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const { data: session } = useSession();
 
   return (
     <header className="relative z-50">
@@ -40,7 +42,7 @@ export const HeroHeader = () => {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="transition text-muted-foreground hover:text-accent-foreground"
+                      className="transition text-muted-foreground hover:text-accent active:text-accent"
                     >
                       {item.name}
                     </Link>
@@ -49,11 +51,28 @@ export const HeroHeader = () => {
               </ul>
             </div>
 
-            {/* LEFT side: نشرة نمو + login + dark mode */}
+            {/* LEFT side: نشرة نمو + login/dashboard + dark mode */}
             <div className="hidden lg:flex items-center gap-3">
-              <Button asChild variant="outline" size="sm">
-                <Link href="/login">تسجيل دخول</Link>
-              </Button>
+              {session ? (
+                <>
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/dashboard">لوحة التحكم</Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => signOut({ redirectTo: '/' })}
+                    className="gap-2"
+                  >
+                    <LogOut className="size-4" />
+                    خروج
+                  </Button>
+                </>
+              ) : (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/login">تسجيل دخول</Link>
+                </Button>
+              )}
               <Button asChild size="sm">
                 <Link href="/blog">نشرة نمو</Link>
               </Button>
@@ -80,7 +99,7 @@ export const HeroHeader = () => {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="block py-1 text-foreground/90 hover:text-accent-foreground transition"
+                      className="block py-1 text-foreground/90 hover:text-accent active:text-accent transition"
                       onClick={() => setMenuOpen(false)}
                     >
                       {item.name}
@@ -88,10 +107,30 @@ export const HeroHeader = () => {
                   </li>
                 ))}
               </ul>
-              <div className="flex items-center gap-3">
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/login" onClick={() => setMenuOpen(false)}>تسجيل دخول</Link>
-                </Button>
+              <div className="flex flex-col items-stretch gap-3">
+                {session ? (
+                  <>
+                    <Button asChild variant="outline" size="sm">
+                      <Link href="/dashboard" onClick={() => setMenuOpen(false)}>لوحة التحكم</Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        signOut({ redirectTo: '/' });
+                      }}
+                      className="gap-2"
+                    >
+                      <LogOut className="size-4" />
+                      خروج
+                    </Button>
+                  </>
+                ) : (
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/login" onClick={() => setMenuOpen(false)}>تسجيل دخول</Link>
+                  </Button>
+                )}
                 <Button asChild size="sm">
                   <Link href="/blog" onClick={() => setMenuOpen(false)}>نشرة نمو</Link>
                 </Button>
