@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Plus, Edit2, Trash2, X } from 'lucide-react';
-import { TeamMember, useTeamMembers } from '@/lib/useTeamMembers';
+import { TeamMember, useTeamMembers, TEAM_CATEGORIES, TeamCategory } from '@/lib/useTeamMembers';
 
 export function TeamMembersManager() {
   const { members, addMember, updateMember, deleteMember } = useTeamMembers();
@@ -12,13 +12,21 @@ export function TeamMembersManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Omit<TeamMember, 'id'>>({
     name: '',
-    role: '',
+    position: '',
+    category: 'المؤسسيين',
     image: '',
-    bio: '',
+    whatsapp: '',
+    linkedin: '',
+    github: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.name.trim() || !formData.position.trim()) {
+      alert('الرجاء ملء جميع الحقول المطلوبة');
+      return;
+    }
 
     if (editingId) {
       updateMember(editingId, formData);
@@ -29,9 +37,12 @@ export function TeamMembersManager() {
 
     setFormData({
       name: '',
-      role: '',
+      position: '',
+      category: 'المؤسسيين',
       image: '',
-      bio: '',
+      whatsapp: '',
+      linkedin: '',
+      github: '',
     });
     setShowForm(false);
   };
@@ -39,9 +50,12 @@ export function TeamMembersManager() {
   const handleEdit = (member: TeamMember) => {
     setFormData({
       name: member.name,
-      role: member.role,
+      position: member.position,
+      category: member.category,
       image: member.image || '',
-      bio: member.bio || '',
+      whatsapp: member.whatsapp || '',
+      linkedin: member.linkedin || '',
+      github: member.github || '',
     });
     setEditingId(member.id);
     setShowForm(true);
@@ -52,9 +66,12 @@ export function TeamMembersManager() {
     setEditingId(null);
     setFormData({
       name: '',
-      role: '',
+      position: '',
+      category: 'المؤسسيين',
       image: '',
-      bio: '',
+      whatsapp: '',
+      linkedin: '',
+      github: '',
     });
   };
 
@@ -86,9 +103,10 @@ export function TeamMembersManager() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name */}
             <input
               type="text"
-              placeholder="الاسم"
+              placeholder="الاسم *"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -97,33 +115,73 @@ export function TeamMembersManager() {
               className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
 
+            {/* Position */}
             <input
               type="text"
-              placeholder="الوظيفة"
-              value={formData.role}
+              placeholder="الموضع الوظيفي *"
+              value={formData.position}
               onChange={(e) =>
-                setFormData({ ...formData, role: e.target.value })
+                setFormData({ ...formData, position: e.target.value })
               }
               required
               className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
 
-            <textarea
-              placeholder="النبذة الشخصية"
-              value={formData.bio || ''}
+            {/* Category */}
+            <select
+              value={formData.category}
               onChange={(e) =>
-                setFormData({ ...formData, bio: e.target.value })
+                setFormData({ ...formData, category: e.target.value as TeamCategory })
               }
-              rows={4}
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-            />
+              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
+              {TEAM_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
 
+            {/* Image URL */}
             <input
               type="url"
               placeholder="رابط الصورة"
               value={formData.image || ''}
               onChange={(e) =>
                 setFormData({ ...formData, image: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+
+            {/* WhatsApp */}
+            <input
+              type="tel"
+              placeholder="رقم الهاتف (WhatsApp) - مثال: +966501234567"
+              value={formData.whatsapp || ''}
+              onChange={(e) =>
+                setFormData({ ...formData, whatsapp: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+
+            {/* LinkedIn */}
+            <input
+              type="url"
+              placeholder="رابط LinkedIn - مثال: https://linkedin.com/in/username"
+              value={formData.linkedin || ''}
+              onChange={(e) =>
+                setFormData({ ...formData, linkedin: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+
+            {/* GitHub */}
+            <input
+              type="url"
+              placeholder="رابط GitHub - مثال: https://github.com/username"
+              value={formData.github || ''}
+              onChange={(e) =>
+                setFormData({ ...formData, github: e.target.value })
               }
               className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
@@ -154,17 +212,20 @@ export function TeamMembersManager() {
         ) : (
           members.map((member) => (
             <Card key={member.id} className="p-4 hover:shadow-lg transition-shadow">
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <h3 className="font-bold text-lg mb-1">{member.name}</h3>
-                  <p className="text-sm text-accent mb-2 font-semibold">
-                    {member.role}
+                  <p className="text-sm text-accent mb-1 font-semibold">
+                    {member.position}
                   </p>
-                  {member.bio && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {member.bio}
-                    </p>
-                  )}
+                  <p className="text-xs text-muted-foreground mb-2 bg-muted px-2 py-1 rounded inline-block">
+                    {member.category}
+                  </p>
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    {member.whatsapp && <p>📱 {member.whatsapp}</p>}
+                    {member.linkedin && <p>🔗 LinkedIn: {member.linkedin}</p>}
+                    {member.github && <p>⚙️ GitHub: {member.github}</p>}
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -179,7 +240,11 @@ export function TeamMembersManager() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => deleteMember(member.id)}
+                    onClick={() => {
+                      if (confirm('هل تريد حذف هذا العضو؟')) {
+                        deleteMember(member.id);
+                      }
+                    }}
                     className="gap-2 text-red-600 hover:text-red-700"
                   >
                     <Trash2 className="size-4" />

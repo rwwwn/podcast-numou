@@ -30,8 +30,8 @@ export default function HeroSection() {
   <span
     className="
       inline bg-clip-text text-transparent
-      bg-gradient-to-tr from-primary to-teal-4
-      dark:from-sun dark:to-rose-3
+      bg-gradient-to-tr from-orange-400 to-orange-600
+      dark:from-orange-300 dark:to-orange-500
     "
   >
     للنموّ

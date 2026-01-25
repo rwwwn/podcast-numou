@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { useContactSubmissions } from '@/lib/useContactSubmissions';
 
 export default function ContactPage() {
+  const { addSubmission } = useContactSubmissions();
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,6 +19,7 @@ export default function ContactPage() {
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -23,21 +27,49 @@ export default function ContactPage() {
       ...prev,
       [name]: value,
     }));
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    
+    // Validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.subject || !formData.message.trim()) {
+      setError('الرجاء ملء جميع الحقول المطلوبة');
+      return;
+    }
 
-    // Simulate form submission
-    setTimeout(() => {
-      setLoading(false);
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('الرجاء إدخال بريد إلكتروني صحيح');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      // Store the submission
+      addSubmission({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+      });
+
+      // Show success message
       setSubmitted(true);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       
-      // Reset submitted state after 3 seconds
-      setTimeout(() => setSubmitted(false), 3000);
-    }, 1500);
+      // Reset submitted state after 4 seconds
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch {
+      setError('حدث خطأ أثناء إرسال الرسالة. الرجاء المحاولة مرة أخرى.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,7 +78,7 @@ export default function ContactPage() {
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
           تواصل معنا{' '}
-          <span className="inline bg-clip-text text-transparent bg-gradient-to-tr from-primary to-teal-4 dark:from-sun dark:to-rose-3">
+          <span style={{ color: '#f97316' }}>
             الآن
           </span>
         </h1>
@@ -95,9 +127,17 @@ export default function ContactPage() {
       {/* Contact Form */}
       <Card className="p-8 md:p-12 max-w-2xl mx-auto bg-gradient-to-br from-background to-muted/20">
         {submitted && (
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg text-center">
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg text-center animate-in fade-in">
             <p className="text-green-700 dark:text-green-300 font-semibold">
-              شكراً لك! تم استقبال رسالتك بنجاح. سنتواصل معك قريباً.
+              ✓ شكراً لك! تم استقبال رسالتك بنجاح. سنتواصل معك قريباً.
+            </p>
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg text-center animate-in fade-in">
+            <p className="text-red-700 dark:text-red-300 font-semibold">
+              ✗ {error}
             </p>
           </div>
         )}

@@ -1,12 +1,25 @@
 import { useState, useEffect } from 'react';
 
+export type TeamCategory = 'المؤسسيين' | 'لجنة الانتاج والتوزيع' | 'لجنة الشؤون الداخلية' | 'لجنة الشؤون الخارجية' | 'الاعلام';
+
 export interface TeamMember {
   id: string;
   name: string;
-  role: string;
+  position: string;
+  category: TeamCategory;
   image?: string;
-  bio?: string;
+  whatsapp?: string;
+  linkedin?: string;
+  github?: string;
 }
+
+export const TEAM_CATEGORIES: TeamCategory[] = [
+  'المؤسسيين',
+  'لجنة الانتاج والتوزيع',
+  'لجنة الشؤون الداخلية',
+  'لجنة الشؤون الخارجية',
+  'الاعلام'
+];
 
 export function useTeamMembers() {
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -47,11 +60,16 @@ export function useTeamMembers() {
     saveMembers(newMembers);
   };
 
+  const getMembersByCategory = (category: TeamCategory) => {
+    return members.filter((mem) => mem.category === category);
+  };
+
   return {
     members,
     addMember,
     updateMember,
     deleteMember,
     loading,
+    getMembersByCategory,
   };
 }

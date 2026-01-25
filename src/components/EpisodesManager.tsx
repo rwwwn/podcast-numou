@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Plus, Edit2, Trash2, X } from 'lucide-react';
-import { Episode, useEpisodes } from '@/lib/useEpisodes';
+import { useEpisodes, Episode } from '@/lib/useEpisodes';
+import EpisodeCard from '@/components/EpisodeCard';
 
 export function EpisodesManager() {
   const { episodes, addEpisode, updateEpisode, deleteEpisode } = useEpisodes();
@@ -12,16 +13,24 @@ export function EpisodesManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Omit<Episode, 'id'>>({
     title: '',
-    description: '',
-    duration: 0,
+    summary: '',
+    cover: '',
     date: new Date().toISOString().split('T')[0],
-    image: '',
-    spotifyUrl: '',
+    duration: '',
+    soundcloud: '',
+    youtube: '',
+    spotify: '',
+    apple: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (!formData.title.trim() || !formData.summary?.trim()) {
+      alert('الرجاء ملء العنوان والملخص');
+      return;
+    }
+
     if (editingId) {
       updateEpisode(editingId, formData);
       setEditingId(null);
@@ -31,11 +40,14 @@ export function EpisodesManager() {
 
     setFormData({
       title: '',
-      description: '',
-      duration: 0,
+      summary: '',
+      cover: '',
       date: new Date().toISOString().split('T')[0],
-      image: '',
-      spotifyUrl: '',
+      duration: '',
+      soundcloud: '',
+      youtube: '',
+      spotify: '',
+      apple: '',
     });
     setShowForm(false);
   };
@@ -43,11 +55,14 @@ export function EpisodesManager() {
   const handleEdit = (episode: Episode) => {
     setFormData({
       title: episode.title,
-      description: episode.description,
-      duration: episode.duration,
-      date: episode.date,
-      image: episode.image || '',
-      spotifyUrl: episode.spotifyUrl || '',
+      summary: episode.summary || '',
+      cover: episode.cover || '',
+      date: episode.date || new Date().toISOString().split('T')[0],
+      duration: episode.duration || '',
+      soundcloud: episode.soundcloud || '',
+      youtube: episode.youtube || '',
+      spotify: episode.spotify || '',
+      apple: episode.apple || '',
     });
     setEditingId(episode.id);
     setShowForm(true);
@@ -58,21 +73,28 @@ export function EpisodesManager() {
     setEditingId(null);
     setFormData({
       title: '',
-      description: '',
-      duration: 0,
+      summary: '',
+      cover: '',
       date: new Date().toISOString().split('T')[0],
-      image: '',
-      spotifyUrl: '',
+      duration: '',
+      soundcloud: '',
+      youtube: '',
+      spotify: '',
+      apple: '',
     });
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">الحلقات</h2>
+        <div>
+          <h2 className="text-3xl font-bold mb-1">إدارة الحلقات</h2>
+          <p className="text-muted-foreground">أضف وعدّل وحذف الحلقات</p>
+        </div>
         {!showForm && (
-          <Button onClick={() => setShowForm(true)} className="gap-2">
-            <Plus className="size-4" />
+          <Button onClick={() => setShowForm(true)} size="lg" className="gap-2">
+            <Plus className="size-5" />
             حلقة جديدة
           </Button>
         )}
@@ -80,93 +102,175 @@ export function EpisodesManager() {
 
       {/* Form */}
       {showForm && (
-        <Card className="p-6 bg-muted/50">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">
+        <Card className="p-6 bg-gradient-to-br from-background to-muted/20">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold">
               {editingId ? 'تعديل الحلقة' : 'إضافة حلقة جديدة'}
             </h3>
             <button
               onClick={handleCancel}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground transition"
             >
-              <X className="size-5" />
+              <X className="size-6" />
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              placeholder="عنوان الحلقة"
-              value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
-              required
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            {/* Title */}
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                عنوان الحلقة *
+              </label>
+              <input
+                type="text"
+                placeholder="مثال: الحياة المهنية.. لعبة أم خطة؟"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                required
+                className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+              />
+            </div>
 
-            <textarea
-              placeholder="وصف الحلقة"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              rows={4}
-              required
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-            />
+            {/* Summary */}
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                الملخص *
+              </label>
+              <textarea
+                placeholder="ملخص قصير عن الحلقة..."
+                value={formData.summary || ''}
+                onChange={(e) =>
+                  setFormData({ ...formData, summary: e.target.value })
+                }
+                rows={3}
+                required
+                className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition resize-none"
+              />
+            </div>
 
-            <input
-              type="date"
-              value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
-              required
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            {/* Cover Image */}
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                صورة الغلاف (رابط URL)
+              </label>
+              <input
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={formData.cover || ''}
+                onChange={(e) =>
+                  setFormData({ ...formData, cover: e.target.value })
+                }
+                className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+              />
+            </div>
 
-            <input
-              type="number"
-              placeholder="مدة الحلقة (دقيقة)"
-              value={formData.duration}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  duration: parseInt(e.target.value) || 0,
-                })
-              }
-              required
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            {/* Date and Duration */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-2">
+                  تاريخ الحلقة
+                </label>
+                <input
+                  type="date"
+                  value={formData.date || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, date: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">
+                  المدة (مثال: 18:32)
+                </label>
+                <input
+                  type="text"
+                  placeholder="MM:SS"
+                  value={formData.duration || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, duration: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                />
+              </div>
+            </div>
 
-            <input
-              type="url"
-              placeholder="رابط صورة الحلقة (اختياري)"
-              value={formData.image || ''}
-              onChange={(e) =>
-                setFormData({ ...formData, image: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            {/* Platform Links */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-sm">روابط المنصات</h4>
+              
+              <div>
+                <label className="block text-sm text-muted-foreground mb-1">
+                  SoundCloud
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://soundcloud.com/..."
+                  value={formData.soundcloud || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, soundcloud: e.target.value })
+                  }
+                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                />
+              </div>
 
-            <input
-              type="url"
-              placeholder="رابط Spotify (اختياري)"
-              value={formData.spotifyUrl || ''}
-              onChange={(e) =>
-                setFormData({ ...formData, spotifyUrl: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+              <div>
+                <label className="block text-sm text-muted-foreground mb-1">
+                  Spotify
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://open.spotify.com/episode/..."
+                  value={formData.spotify || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, spotify: e.target.value })
+                  }
+                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                />
+              </div>
 
-            <div className="flex gap-2">
-              <Button type="submit" className="flex-1">
-                {editingId ? 'تحديث' : 'إضافة'}
+              <div>
+                <label className="block text-sm text-muted-foreground mb-1">
+                  Apple Podcasts
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://podcasts.apple.com/..."
+                  value={formData.apple || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, apple: e.target.value })
+                  }
+                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-muted-foreground mb-1">
+                  YouTube
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://youtu.be/..."
+                  value={formData.youtube || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, youtube: e.target.value })
+                  }
+                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                />
+              </div>
+            </div>
+
+            {/* Submit Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button type="submit" size="lg" className="flex-1">
+                {editingId ? 'تحديث الحلقة' : 'إضافة الحلقة'}
               </Button>
               <Button
                 type="button"
                 variant="outline"
+                size="lg"
                 onClick={handleCancel}
                 className="flex-1"
               >
@@ -177,51 +281,59 @@ export function EpisodesManager() {
         </Card>
       )}
 
-      {/* Episodes List */}
-      <div className="space-y-4">
-        {episodes.length === 0 ? (
-          <Card className="p-8 text-center">
-            <p className="text-muted-foreground">لا توجد حلقات حالياً</p>
-          </Card>
-        ) : (
-          episodes.map((episode) => (
-            <Card key={episode.id} className="p-4 hover:shadow-lg transition-shadow">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="font-bold text-lg mb-1">{episode.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                    {episode.description}
-                  </p>
-                  <div className="flex gap-4 text-xs text-muted-foreground">
-                    <span>📅 {episode.date}</span>
-                    <span>⏱️ {episode.duration} دقيقة</span>
+      {/* Episodes Display */}
+      {episodes.length === 0 ? (
+        <Card className="p-12 text-center">
+          <p className="text-lg text-muted-foreground">لا توجد حلقات حالياً</p>
+          <Button
+            onClick={() => setShowForm(true)}
+            className="mt-4 gap-2"
+          >
+            <Plus className="size-4" />
+            أضف الحلقة الأولى
+          </Button>
+        </Card>
+      ) : (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-xl font-bold mb-4">
+              الحلقات ({episodes.length})
+            </h3>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {episodes.map((episode) => (
+                <div key={episode.id} className="relative group">
+                  <EpisodeCard episode={episode} />
+                  {/* Edit/Delete Buttons Overlay */}
+                  <div className="absolute top-2 right-2 left-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(episode)}
+                      className="flex-1 gap-1 bg-background/80 backdrop-blur"
+                    >
+                      <Edit2 className="size-4" />
+                      تعديل
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (confirm('هل أنت متأكد من حذف هذه الحلقة؟')) {
+                          deleteEpisode(episode.id);
+                        }
+                      }}
+                      className="flex-1 gap-1 bg-background/80 backdrop-blur text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/50"
+                    >
+                      <Trash2 className="size-4" />
+                      حذف
+                    </Button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(episode)}
-                    className="gap-2"
-                  >
-                    <Edit2 className="size-4" />
-                    تعديل
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => deleteEpisode(episode.id)}
-                    className="gap-2 text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="size-4" />
-                    حذف
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))
-        )}
-      </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

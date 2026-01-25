@@ -3,11 +3,14 @@ import { useState, useEffect } from 'react';
 export interface Episode {
   id: string;
   title: string;
-  description: string;
-  duration: number;
-  date: string;
-  image?: string;
-  spotifyUrl?: string;
+  summary?: string;
+  cover?: string;
+  date?: string;     // ISO format
+  duration?: string; // "18:32" format
+  soundcloud?: string;
+  youtube?: string;
+  spotify?: string;
+  apple?: string;
 }
 
 export function useEpisodes() {
@@ -18,7 +21,11 @@ export function useEpisodes() {
     // Load from localStorage
     const stored = localStorage.getItem('podcast-episodes');
     if (stored) {
-      setEpisodes(JSON.parse(stored));
+      try {
+        setEpisodes(JSON.parse(stored));
+      } catch (error) {
+        console.error('Failed to load episodes:', error);
+      }
     }
     setLoading(false);
   }, []);

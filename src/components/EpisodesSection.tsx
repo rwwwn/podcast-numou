@@ -1,7 +1,11 @@
 // src/components/EpisodesSection.tsx
-import EpisodeCard, { Episode } from "@/components/EpisodeCard";
+'use client';
 
-const episodesData: Episode[] = [
+import { useEffect, useState } from 'react';
+import EpisodeCard, { Episode } from "@/components/EpisodeCard";
+import { useEpisodes } from '@/lib/useEpisodes';
+
+const defaultEpisodesData: Episode[] = [
   // (يمين) تجربة جديدة
   {
     id: "e1",
@@ -10,7 +14,6 @@ const episodesData: Episode[] = [
     cover: "/EpisodeIMG.png",
     soundcloud: "https://on.soundcloud.com/VFgc8VuInHHS3Mpl5r",
     apple: "https://podcasts.apple.com/sa/podcast/%D8%AA%D8%AC%D8%B1%D8%A8%D8%A9-%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9-%D9%85%D9%86-%D9%87%D9%86%D8%A7-%D9%86%D8%A8%D8%AF%D8%A3/id1778013710?i=1000676325381",
-    // لا يوجد سبوتيفاي/يوتيوب هنا؟ أضفيها لاحقًا إذا تبين
   },
 
   // (وسط) الحلقة الأولى
@@ -39,7 +42,7 @@ const episodesData: Episode[] = [
 ];
 
 export default function EpisodesSection({
-  episodes = episodesData,
+  episodes: externalEpisodes,
   title = "أحدث الحلقات",
   subtitle = "لمحة سريعة عن الإصدارات.",
 }: {
@@ -47,6 +50,20 @@ export default function EpisodesSection({
   title?: string;
   subtitle?: string;
 }) {
+  const { episodes: userEpisodes } = useEpisodes();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Use external episodes if provided, otherwise use user episodes or defaults
+  const displayEpisodes = externalEpisodes 
+    ? externalEpisodes 
+    : mounted && userEpisodes.length > 0 
+    ? userEpisodes 
+    : defaultEpisodesData;
+
   return (
     <section id="latest-episodes" className="py-14 md:py-20">
       <div className="mb-6">
@@ -56,7 +73,7 @@ export default function EpisodesSection({
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {episodes.map((ep) => (
+        {displayEpisodes.map((ep) => (
           <EpisodeCard key={ep.id} episode={ep} />
         ))}
       </div>
