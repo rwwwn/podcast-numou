@@ -27,6 +27,7 @@ export const ALLOWED_ADMIN_EMAILS = [
 ];
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
       credentials: {
