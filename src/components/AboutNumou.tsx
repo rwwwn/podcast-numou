@@ -27,14 +27,16 @@ export default function AboutNumou() {
               supports-[backdrop-filter]:bg-white/20
             "
           >
-            <Image
-              src="/about-cover.jpg" // ضعي الصورة هنا (public/images/about-cover.jpg)
-              alt="بودكاست نمو"
-              width={900}
-              height={700}
-              className="h-full w-full object-cover"
-              priority
-            />
+            <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/10] w-full">
+              <Image
+                src="/about-cover.jpg" // ضعي الصورة هنا (public/images/about-cover.jpg)
+                alt="بودكاست نمو"
+                fill
+                sizes="(max-width: 1024px) 100vw, 45vw"
+                className="h-full w-full object-cover"
+                priority
+              />
+            </div>
             {/* شارة التأسيس */}
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-2xl bg-background/80 px-4 py-2 text-xs shadow-sm ring-1 ring-border">
               <span className="text-muted-foreground">تأسس عام</span>
@@ -44,7 +46,7 @@ export default function AboutNumou() {
         </div>
 
         {/* النص */}
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-7 text-center lg:text-right">
           <h2 id="about-heading" className="text-3xl font-extrabold md:text-4xl">
             تعرّف على <span className="word-gradient">نمو</span>
           </h2>

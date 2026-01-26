@@ -99,12 +99,12 @@ export default function HeroSection() {
             "
           >
             <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-white/60 to-transparent opacity-70 mix-blend-overlay dark:from-white/15" />
-            <div className="overflow-hidden rounded-[calc(theme(borderRadius.3xl)-4px)]">
+            <div className="overflow-hidden rounded-[calc(theme(borderRadius.3xl)-4px)] relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-[16/9]">
               <Image
                 src="/hero-cover.jpg"
                 alt="غلاف بودكاست نمو"
-                width={1120}
-                height={430}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="h-full w-full transform object-cover transition duration-300 group-hover:scale-[1.02]"
                 priority
               />
