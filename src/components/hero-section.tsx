@@ -90,7 +90,7 @@ export default function HeroSection() {
         <div className="order-first lg:order-last">
           <div
             className="
-              group relative mx-auto w-full max-w-2xl rounded-3xl
+              group relative mx-auto w-full max-w-3xl rounded-3xl
               bg-white/30 p-1 shadow-lg ring-1 ring-white/50
               backdrop-blur-xl transition
               hover:shadow-xl hover:drop-shadow
@@ -99,13 +99,13 @@ export default function HeroSection() {
             "
           >
             <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-white/60 to-transparent opacity-70 mix-blend-overlay dark:from-white/15" />
-            <div className="overflow-hidden rounded-[calc(theme(borderRadius.3xl)-4px)] relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-[16/9]">
+            <div className="overflow-hidden rounded-[calc(theme(borderRadius.3xl)-4px)] relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/9] bg-white/40 dark:bg-white/5">
               <Image
                 src="/hero-cover.jpg"
                 alt="غلاف بودكاست نمو"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="h-full w-full transform object-cover transition duration-300 group-hover:scale-[1.02]"
+                className="h-full w-full transform object-contain transition duration-300 group-hover:scale-[1.02]"
                 priority
               />
             </div>
