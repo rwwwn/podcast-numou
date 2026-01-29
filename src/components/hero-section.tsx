@@ -86,26 +86,20 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* صورة الغلاف (بطاقة زجاجية محسّنة) */}
+        {/* صورة الغلاف */}
         <div className="order-first lg:order-last">
           <div
             className="
-              group relative mx-auto w-full max-w-3xl rounded-3xl
-              bg-white/30 p-1 shadow-lg ring-1 ring-white/50
-              backdrop-blur-xl transition
-              hover:shadow-xl hover:drop-shadow
-              dark:bg-white/5 dark:ring-white/10
-              supports-[backdrop-filter]:bg-white/20
+              group relative mx-auto w-full max-w-4xl
             "
           >
-            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-white/60 to-transparent opacity-70 mix-blend-overlay dark:from-white/15" />
-            <div className="overflow-hidden rounded-[calc(theme(borderRadius.3xl)-4px)] relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/9] bg-white/40 dark:bg-white/5">
+            <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] xl:aspect-[4/5] flex items-center justify-center overflow-hidden rounded-3xl shadow-xl ring-1 ring-black/5 dark:ring-white/10">
               <Image
                 src="/hero-cover.jpg"
                 alt="غلاف بودكاست نمو"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="h-full w-full transform object-contain transition duration-300 group-hover:scale-[1.02]"
+                className="h-full w-full transform object-cover transition duration-300 group-hover:scale-[1.02]"
                 priority
               />
             </div>
