@@ -1,4 +1,6 @@
 // src/components/EpisodeCard.tsx
+'use client';
+
 import Image from "next/image";
 
 export type Episode = {
@@ -21,7 +23,14 @@ const platforms = [
   { key: "soundcloud", label: "SoundCloud", icon: "/soundcloud-logo.png" },
 ] as const;
 
-export default function EpisodeCard({ episode }: { episode: Episode }) {
+// ===== الإضافة المهمة: دعم size + توسيط الصورة =====
+type EpisodeCardProps = {
+  episode: Episode;
+  /** حجم الكرت: small (افتراضي) | medium | featured */
+  size?: "small" | "medium" | "featured";
+};
+
+export default function EpisodeCard({ episode, size = "small" }: EpisodeCardProps) {
   const {
     title,
     summary,
@@ -34,8 +43,19 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
     apple,
   } = episode;
 
-  const primaryLink = soundcloud || spotify || apple || youtube;
+  // ترتيب أفضلية الرابط الأساسي (تقدرين تغيّرينه لو تبين)
+  const primaryLink = youtube || soundcloud || spotify || apple;
+
   const isNew = isRecent(date, 14);
+
+  // مقاسات ديناميكية حسب الحجم
+  const coverWidth =
+    size === "featured" ? 960 : size === "medium" ? 800 : 640;
+  const coverHeight = Math.round(coverWidth * 0.5625); // نسبة 16:9
+  const titleSize =
+    size === "featured" ? "text-xl" : size === "medium" ? "text-lg" : "text-base";
+  const summaryClamp =
+    size === "featured" ? "line-clamp-4" : size === "medium" ? "line-clamp-4" : "line-clamp-3";
 
   return (
     <article
@@ -44,6 +64,7 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
         hover:-translate-y-0.5 hover:shadow-md
         hover:border-teal/40
         bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/70
+        text-right
       "
     >
       {/* NEW badge */}
@@ -63,11 +84,16 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
         <Image
           src={cover}
           alt={title}
-          width={800}
-          height={450}
-          className="aspect-video w-full object-cover transition group-hover:scale-[1.01]"
-          sizes="(max-width: 1024px) 100vw, 33vw"
-          priority={false}
+          width={coverWidth}
+          height={coverHeight}
+          // أهم سطر لتوسيط الصورة داخل الكرت
+          className="aspect-video w-auto max-w-full object-cover mx-auto transition group-hover:scale-[1.01]"
+          sizes={
+            size === "featured"
+              ? "(max-width: 1024px) 100vw, 800px"
+              : "(max-width: 1024px) 100vw, 33vw"
+          }
+          priority={size !== "small"} // نخلي featured/medium أعلى أولوية
         />
         {duration ? (
           <span
@@ -83,17 +109,17 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
       </div>
 
       {/* العنوان والملخص */}
-      <h3 className="mb-1 line-clamp-2 font-semibold leading-6">
+      <h3 className={`mb-1 line-clamp-2 font-semibold leading-6 ${titleSize}`}>
         {title}
       </h3>
       {summary ? (
-        <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">
+        <p className={`${summaryClamp} text-sm leading-6 text-muted-foreground`}>
           {summary}
         </p>
       ) : null}
 
       {/* التاريخ */}
-      {(date) && (
+      {date && (
         <div className="mt-3 text-xs text-muted-foreground">
           {formatDate(date)}
         </div>
