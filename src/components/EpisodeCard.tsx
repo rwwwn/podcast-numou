@@ -65,7 +65,7 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
           alt={title}
           width={800}
           height={450}
-          className="aspect-video w-full object-cover transition group-hover:scale-[1.01]"
+          className="aspect-video object-cover mx-auto" 
           sizes="(max-width: 1024px) 100vw, 33vw"
           priority={false}
         />
